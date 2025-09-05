@@ -33,6 +33,10 @@ const AdminDashboard = () => {
     fetchClientCount();
   }, []);
 
+  const handleNavigateVehicules = () => {
+    navigate('/vehicules');
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -61,7 +65,7 @@ const AdminDashboard = () => {
       
       <div className="dashboard-actions">
         <button className="action-button" disabled>Gérer les clients</button>
-        <button className="action-button" disabled>Gérer les Véhicules</button>
+        <button className="action-button" onClick={handleNavigateVehicules}>Gérer les Véhicules</button>
         <button className="action-button" disabled>Rapports</button>
       </div>
     </div>

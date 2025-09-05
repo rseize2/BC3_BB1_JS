@@ -172,6 +172,24 @@ app.get('/api/clients', (req, _res, next) => {
   });
 });
 
+
+app.get('/api/vehicules', (req,_res, next) => {
+  req.requiredroles = ["admin"]
+  next()
+},  verifyTokenAndRole, (req, res) => {
+  const sql = 'SELECT * FROM vehicules';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Server error');
+      return;
+    }
+
+    res.status(200).json(results);
+  });
+});
+
+
 app.use(express.static(path.join(__dirname, "./client/dist")))
 app.get("*", (_, res) => {
     res.sendFile(

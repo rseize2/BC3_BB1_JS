@@ -25,3 +25,5 @@ CREATE TABLE IF NOT EXISTS vehicules (
     client_id INT(11),
     FOREIGN KEY (client_id) REFERENCES users(id)
 );
+
+INSERT INTO vehicules (marque, modele, annee, client_id) VALUES ('Renaut', 'Clio', 2020, 1);
