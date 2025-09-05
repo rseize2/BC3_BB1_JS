@@ -189,6 +189,62 @@ app.get('/api/vehicules', (req,_res, next) => {
   });
 });
 
+app.post('/api/vehicules/add', (req, _res, next) => {
+    req.requiredroles = ["admin"];
+    next();
+}, verifyTokenAndRole, (req, res) => {
+    const { marque, modele, annee, client_id } = req.body;
+    const sql = 'INSERT INTO vehicules (marque, modele, annee, client_id) VALUES (?, ?, ?, ?)';
+    db.query(sql, [marque, modele, annee, client_id || null], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server error');
+            return;
+        }
+
+        res.status(201).send({ message: 'Véhicule ajouter avec succés', id: result.insertId });
+    });
+});
+
+app.put('/api/vehicules/edit/:id', (req, _res, next) => {
+    req.requiredroles = ["admin"];
+    next();
+}, verifyTokenAndRole, (req, res) => {
+    const { id } = req.params;
+    const { marque, modele, annee, client_id } = req.body;
+    const sql = 'UPDATE vehicules SET marque = ?, modele = ?, annee = ?, client_id = ? WHERE id = ?';
+    db.query(sql, [marque, modele, annee, client_id, id], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server error');
+            return;
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).send({ message: 'Véhicule non trouver' });
+        }
+        res.status(200).send({ message: 'Véhicule ajouter avec succés' });
+    });
+});
+
+app.delete('/api/vehicules/delete/:id', (req, _res, next) => {
+    req.requiredroles = ["admin"];
+    next();
+}, verifyTokenAndRole, (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM vehicules WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server error');
+            return;
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).send({ message: 'Véhicule non trouver' });
+        }
+        res.status(200).send({ message: 'Véhicule ajouter avec succés' });
+    });
+});
+
 
 app.use(express.static(path.join(__dirname, "./client/dist")))
 app.get("*", (_, res) => {

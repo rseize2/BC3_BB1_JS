@@ -1,35 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AddVehiculeModal from './AddVehiculeModal';
 import './Dashboard.css';
 const baseURI = import.meta.env.VITE_API_BASE_URL;
 
 const ListVehiculesPage = () => {
     const [vehicules, setVehicules] = useState([]);
+    const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchVehicules = async () => {
-            try {
-                const response = await fetch(baseURI + 'api/vehicules', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    setVehicules(data);
-                } else {
-                    alert("Erreur lors de la récupération des véhicules");
-                    navigate('/');
-                }
-            } catch (error) {
-                alert("Erreur réseau");
+    const fetchVehicules = async () => {
+        try {
+            const response = await fetch(baseURI + 'api/vehicules', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setVehicules(data);
+            } else {
+                alert("Erreur lors de la récupération des véhicules");
                 navigate('/');
             }
-        };
+        } catch (error) {
+            alert("Erreur réseau");
+            navigate('/');
+        }
+    };
 
+    useEffect(() => {
         fetchVehicules();
     }, []);
 
@@ -37,6 +37,7 @@ const ListVehiculesPage = () => {
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <h1>Liste des véhicules</h1>
+                <button className="action-button" onClick={() => setShowModal(true)}>Ajouter un véhicule</button>
             </div>
 
             <div className="dashboard-stats">
@@ -75,6 +76,7 @@ const ListVehiculesPage = () => {
                     </table>
                 )}
             </div>
+            {showModal && <AddVehiculeModal onClose={() => setShowModal(false)} onAdded={fetchVehicules} />}
         </div>
     );
 };
