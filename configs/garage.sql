@@ -15,3 +15,13 @@ CREATE TABLE users (
 
 INSERT INTO users (lastname, firstname, email, password, role) VALUES ('VroumVroum', 'Garagiste', 'garagiste@vroumvroum.fr', '$2a$08$K1WDAEAfMUsXmYGQJffEXuA47ZBqAQdxglvZW2MPFvpY/zbAvwqZO', 'admin');
 INSERT INTO users (lastname, firstname, email, password, role) VALUES ('Elric', 'Edward', 'edward.elric@alchem.fma', '$2a$08$K1WDAEAfMUsXmYGQJffEXuA47ZBqAQdxglvZW2MPFvpY/zbAvwqZO', 'client'); 
+
+
+CREATE TABLE IF NOT EXISTS vehicules (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    marque VARCHAR(50) NOT NULL,
+    modele VARCHAR(50) NOT NULL,
+    annee INT(11),
+    client_id INT(11),
+    FOREIGN KEY (client_id) REFERENCES users(id)
+);
