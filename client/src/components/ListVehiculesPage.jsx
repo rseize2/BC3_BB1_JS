@@ -40,6 +40,22 @@ const ListVehiculesPage = () => {
         setShowModal(true);
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const response = await fetch(baseURI + `api/vehicules/delete/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            if (response.ok) {
+                setVehicules(vehicules.filter(v => v.id !== id));
+            } else {
+                alert("Erreur lors de la suppression du véhicule");
+            }
+        } catch (error) {
+            alert("Erreur réseau");
+        }
+    };
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
@@ -82,6 +98,7 @@ const ListVehiculesPage = () => {
                                     <td>{v.client_id}</td>
                                     <td>
                                         <button className="action-button" onClick={() => handleEdit(v)}>Modifier</button>
+                                        <button className="action-button" onClick={() => handleDelete(v.id)}>Supprimer</button>
                                     </td>
                                 </tr>
                             ))}
