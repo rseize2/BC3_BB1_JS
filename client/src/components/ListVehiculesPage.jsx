@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AddVehiculeModal from './AddVehiculeModal';
+import PutVehiculeModal from './PutVehiculeModal';
 import './Dashboard.css';
 const baseURI = import.meta.env.VITE_API_BASE_URL;
 
 const ListVehiculesPage = () => {
     const [vehicules, setVehicules] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [editVehicule, setEditVehicule] = useState(null);
     const navigate = useNavigate();
 
     const fetchVehicules = async () => {
@@ -33,11 +35,18 @@ const ListVehiculesPage = () => {
         fetchVehicules();
     }, []);
 
+    const handleEdit = (vehicule) => {
+        setEditVehicule(vehicule);
+        setShowModal(true);
+    };
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <h1>Liste des véhicules</h1>
-                <button className="action-button" onClick={() => setShowModal(true)}>Ajouter un véhicule</button>
+                <button className="action-button" onClick={() => { setEditVehicule(null); setShowModal(true); }}>
+                    Ajouter un véhicule
+                </button>
             </div>
 
             <div className="dashboard-stats">
@@ -60,6 +69,7 @@ const ListVehiculesPage = () => {
                                 <th>Modèle</th>
                                 <th>Année</th>
                                 <th>Client ID</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,13 +80,21 @@ const ListVehiculesPage = () => {
                                     <td>{v.modele}</td>
                                     <td>{v.annee}</td>
                                     <td>{v.client_id}</td>
+                                    <td>
+                                        <button className="action-button" onClick={() => handleEdit(v)}>Modifier</button>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 )}
             </div>
-            {showModal && <AddVehiculeModal onClose={() => setShowModal(false)} onAdded={fetchVehicules} />}
+
+            {showModal && (
+                editVehicule
+                    ? <PutVehiculeModal vehicule={editVehicule} onClose={() => setShowModal(false)} onUpdated={fetchVehicules} />
+                    : <AddVehiculeModal onClose={() => setShowModal(false)} onAdded={fetchVehicules} />
+            )}
         </div>
     );
 };
